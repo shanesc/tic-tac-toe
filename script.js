@@ -4,16 +4,70 @@
 */
 
 // create gameBoard module
-//   within module, create gameboard array, fill with random X's and O's for now
-//   create a method to update gameboard array
-//     function(marker, position) => gameboardarray(position) = marker
-//   create a method to return the gameboard array
-//     function getGameboard => return gameboard array;
-//   create method that checks for a winner
-//     function isWin() => logic to check for various cases of winning
-//       return true or false
-//   create a method that checks for a draw
-//       function isTie => return true or false
+const gameBoard = (function () {
+  //   within module, create gameboard array, fill with random X's and O's for now
+  const board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'X'];
+  //   create a method to return the gameboard array
+  //     function getGameboard => return gameboard array;
+  function getBoard() {
+    return board;
+  }
+  //   create a method to update gameboard array
+  //     function(marker, position) => gameboardarray(position) = marker
+  function updateBoard(marker, position) {
+    board[position] = marker;
+    return marker;
+  }
+
+  // create a method to determine result of board - draw, win, or null (i.e. not finished yet)
+  function getResult() {
+    //   if any null values in board, return null (not all moves made)
+    if (board.includes(null)) {
+      return null;
+      //   else if check against 8 winning combos, if true return win (move to own function)
+    } else if (checkForWinner()) {
+      return 'win';
+      //   else return draw
+    } else {
+      return 'draw';
+    }
+
+    function checkForWinner() {
+      // deconstruct array for easier references to positions
+      const [p1, p2, p3, p4, p5, p6, p7, p8, p9] = board;
+
+      // return true for the following
+      //     1 === 2 === 3, 4 === 5 === 6, 7 === 8 === 9,
+      //     1 === 4 === 7, 2 === 5 === 8, 3 === 6 === 9,
+      //     1 === 5 === 9, 3 === 5 === 7
+      if (new Set([p1, p2, p3]).size === 1) {
+        return true;
+      } else if (new Set([p4, p5, p6]).size === 1) {
+        return true;
+      } else if (new Set([p7, p8, p9]).size === 1) {
+        return true;
+      } else if (new Set([p1, p4, p7]).size === 1) {
+        return true;
+      } else if (new Set([p2, p5, p8]).size === 1) {
+        return true;
+      } else if (new Set([p3, p6, p9]).size === 1) {
+        return true;
+      } else if (new Set([p1, p5, p9]).size === 1) {
+        return true;
+      } else if (new Set([p3, p5, p7]).size === 1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  return {
+    getBoard,
+    updateBoard,
+    getResult,
+  };
+})();
 
 // create players objects from factory functions
 //   variables for name and marker
