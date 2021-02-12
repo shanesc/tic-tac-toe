@@ -4,9 +4,46 @@
 */
 
 // create gameBoard module
-// within module, create gameboard array, fill with random X's and O's for now
+//   within module, create gameboard array, fill with random X's and O's for now
+//   create a method to update gameboard array
+//     function(marker, position) => gameboardarray(position) = marker
+//   create a method to return the gameboard array
+//     function getGameboard => return gameboard array;
+//   create method that checks for a winner
+//     function isWin() => logic to check for various cases of winning
+//       return true or false
+//   create a method that checks for a draw
+//       function isTie => return true or false
 // create players objects from factory functions
-//
+//   variables for name and marker
+//   method for getName
+//     function() => return this.name
+//   method for getMarker
+//     function() => return this.marker
+// create gameControl module
+//   create variables to initialize players
+//     player1 = {name: foo.getName, marker: foo.getMarker}
+//     player2 = {name: bar.getName, marker: bar.getMarker}
+//   create variable for active player
+//     activePlayer = player1
+//   create method to switch active player
+//     function switchPlayer()
+//     activePlayer = activePlayer === player1 ? player2 : player 1
+//   create a method that plays one turn
+//     for active player
+//       method to input choice
+//         updates position variable
+//       update the gameboard array
+//         updateGameboard(activePlayer.marker, postion)
+//     check result
+//       if gameBoard.isWin(), announce result(activePlayer)
+//       else if gameBoard.isTie(), annunce result(tie)
+//       else newTurn()
+//   newTurn method to change activePlayer, perform one turn
+//     call switchPlayer()
+//     call playTurn()
+//   create method to announce result
+//     fucntion announceResult(result) => if player, log winner, else log tie
 
 /*
 Set up your HTML and write a JavaScript function that will render the contents of the gameboard array to the webpage (for now you can just manually fill in the array with "X"s and "O"s)
