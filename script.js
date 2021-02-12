@@ -14,12 +14,26 @@
 //       return true or false
 //   create a method that checks for a draw
 //       function isTie => return true or false
+
 // create players objects from factory functions
 //   variables for name and marker
-//   method for getName
-//     function() => return this.name
-//   method for getMarker
-//     function() => return this.marker
+function player(name, marker) {
+  //   method for getName
+  //     function() => return this.name
+  function getName() {
+    return name;
+  }
+  //   method for getMarker
+  //     function() => return this.marker
+  function getMarker() {
+    return marker;
+  }
+  return {
+    getName,
+    getMarker,
+  };
+}
+
 // create gameControl module
 //   create variables to initialize players
 //     player1 = {name: foo.getName, marker: foo.getMarker}
