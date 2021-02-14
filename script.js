@@ -3,17 +3,38 @@
     Your main goal here is to have as little global code as possible. Try tucking everything away inside of a module or factory. Rule of thumb: if you only ever need ONE of something (gameBoard, displayController), use a module. If you need multiples of something (players!), create them with factories.
 */
 
-// create gameBoard module
-const gameBoard = (function () {
-  //   within module, create gameboard array, fill with random X's and O's for now
+/*
+  board: controls state of the game board
+    - Update board
+    - Return board
+  player: controls type of player (human or AI), name, stores marker, makes selection
+    - Name
+    - Marker type
+    - Player type
+    - Method to make selection
+      This will vary depending on human or AI player
+    - Methods to return name, marker, player type
+  controller (i.e. referee): controls the flow of game, divvy out marker, who makes next selection, checks for win or tie state, clears board, starts game, etc.
+    - method to divvy out markers
+    - starts game
+      clear board
+      divvy marker
+    - method to check for game end state
+    - method to ask player for selection
+    - method to update board
+*/
+
+// create board module
+const board = (function () {
+  //   within module, create board array, fill with random X's and O's for now
   const board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'X'];
-  //   create a method to return the gameboard array
-  //     function getGameboard => return gameboard array;
+  //   create a method to return the board array
+  //     function getboard => return board array;
   function getBoard() {
     return board;
   }
-  //   create a method to update gameboard array
-  //     function(marker, position) => gameboardarray(position) = marker
+  //   create a method to update board array
+  //     function(marker, position) => board(position) = marker
   function updateBoard(marker, position) {
     board[position] = marker;
     return marker;
@@ -69,9 +90,19 @@ const gameBoard = (function () {
   };
 })();
 
+/*
+player: controls type of player (human or AI), name, stores marker, makes selection
+    - Name
+    - Marker type
+    - Player type
+    - Method to make selection
+      This will vary depending on human or AI player
+    - Methods to return name, marker, player type
+*/
+
 // create players objects from factory functions
 //   variables for name and marker
-function player(name, marker) {
+function Player(name, marker, human = false) {
   //   method for getName
   //     function() => return this.name
   function getName() {
@@ -82,16 +113,53 @@ function player(name, marker) {
   function getMarker() {
     return marker;
   }
+  function makeSelection(board) {
+    // create selection variable
+    if (human) {
+      // prompt user for input based on available board spots
+    } else {
+      // do some AI selection based on board
+    }
+    // return selection
+  }
+
   return {
     getName,
     getMarker,
+    makeSelection,
   };
 }
 
+/*
+controller (i.e. referee): controls the flow of game, divvy out marker, who makes next selection, checks for win or tie state, clears board, starts game, etc.
+    - method to divvy out markers
+    - starts game
+      clear board
+      divvy marker
+    - method to check for game end state
+    - method to ask player for selection and update board
+*/
+
 // create gameControl module
+
+//  start
+//    clear board
+//    create players
+//    prompt player1 for selection
+//  _getGameState(board)
+//    if game is over, return tie or winner
+//    if game is not over, return in progress
+//  _getPlayerSelection(player)
+//    update board with selection
+//  makeTurn()
+//    switch active player
+//    getPlayerSelection(activePlayer)
+//  end
+//    return winner
+
 //   create variables to initialize players
-//     player1 = {name: foo.getName, marker: foo.getMarker}
-//     player2 = {name: bar.getName, marker: bar.getMarker}
+//     player1 = {name: foo.getName, marker: foo.getMarker, human}
+//     player2 = {name: bar.getName, marker: bar.getMarker, human}
 //   create variable for active player
 //     activePlayer = player1
 //   create method to switch active player
