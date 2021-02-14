@@ -1,48 +1,15 @@
-/*
-  You’re going to store the gameboard as an array inside of a Gameboard object, so start there! Your players are also going to be stored in objects… and you’re probably going to want an object to control the flow of the game itself.
-    Your main goal here is to have as little global code as possible. Try tucking everything away inside of a module or factory. Rule of thumb: if you only ever need ONE of something (gameBoard, displayController), use a module. If you need multiples of something (players!), create them with factories.
-*/
-
-/*
-  board: controls state of the game board
-    - Update board
-    - Return board
-  player: controls type of player (human or AI), name, stores marker, makes selection
-    - Name
-    - Marker type
-    - Player type
-    - Method to make selection
-      This will vary depending on human or AI player
-    - Methods to return name, marker, player type
-  controller (i.e. referee): controls the flow of game, divvy out marker, who makes next selection, checks for win or tie state, clears board, starts game, etc.
-    - method to divvy out markers
-    - starts game
-      clear board
-      divvy marker
-    - method to check for game end state
-    - method to ask player for selection
-    - method to update board
-*/
-
 // create board module
 const board = (function () {
-  //   within module, create board array, fill with random X's and O's for now
-  // const board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'X'];
-  let _board = _initialize();
-  //   create a method to return the board array
-  //     function getboard => return board array;
+  // let _board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
+  let _board = new Array(9).fill(null);
+
   function getState() {
     return _board;
   }
-  //   create a method to update board array
-  //     function(marker, position) => board(position) = marker
+
   function update(marker, position) {
     _board[position] = marker;
     return marker;
-  }
-
-  function _initialize() {
-    return new Array(9).fill(null);
   }
 
   function clear() {
@@ -57,29 +24,16 @@ const board = (function () {
   };
 })();
 
-/*
-player: controls type of player (human or AI), name, stores marker, makes selection
-    - Name
-    - Marker type
-    - Player type
-    - Method to make selection
-      This will vary depending on human or AI player
-    - Methods to return name, marker, player type
-*/
-
 // create players objects from factory functions
-//   variables for name and marker
 function Player(name, marker, human = false) {
-  //   method for getName
-  //     function() => return this.name
   function getName() {
     return name;
   }
-  //   method for getMarker
-  //     function() => return this.marker
+
   function getMarker() {
     return marker;
   }
+
   function makeSelection(board = null) {
     // create selection variable
     let selection;
@@ -100,36 +54,32 @@ function Player(name, marker, human = false) {
   };
 }
 
-/*
-controller (i.e. referee): controls the flow of game, divvy out marker, who makes next selection, checks for win or tie state, clears board, starts game, etc.
-    - method to divvy out markers
-    - starts game
-      clear board
-      divvy marker
-    - method to check for game end state
-    - method to ask player for selection and update board
-*/
-
-// create gameControl module
+// create controller module
 const controller = (() => {
   function play(playerOne, playerTwo) {
     board.clear();
+
     let activePlayer = null;
     let keepPlaying = true;
 
     while (keepPlaying) {
       activePlayer =
         activePlayer === playerOne ? playerTwo : playerOne;
-      const selection = activePlayer.makeSelection(board);
-      board.update(activePlayer.getMarker(), selection);
-      console.log(board.getState());
+      _takeTurn(activePlayer);
       if (_isWinner() || _isDraw()) {
-        console.log('stop');
         keepPlaying = false;
       }
     }
-    _end(_isWinner ? activePlayer : 'Draw');
+
+    _end(_isWinner() ? activePlayer : 'Draw');
   }
+
+  function _takeTurn(activePlayer) {
+    const selection = activePlayer.makeSelection(board);
+    board.update(activePlayer.getMarker(), selection);
+    console.log(board.getState());
+  }
+
   function _isWinner() {
     // deconstruct array for easier references to positions
     const [p1, p2, p3, p4, p5, p6, p7, p8, p9] = board.getState();
@@ -160,15 +110,16 @@ const controller = (() => {
   }
 
   function _isDraw() {
-    if (_isWinner || board.getState().includes(null)) {
+    if (_isWinner() || board.getState().includes(null)) {
       return false;
     } else {
       return true;
     }
   }
 
-  function _end(result) {
-    alert(result.getName() || result);
+  function _end(winner) {
+    alert(winner === 'Draw' ? 'Draw' : winner.getName());
+    console.log('end');
   }
 
   return {
@@ -181,30 +132,6 @@ const controller = (() => {
 //    create players
 const player1 = Player('test', 'X', true);
 const player2 = Player('tester', 'O', true);
-
-//   create variables to initialize players
-//     player1 = {name: foo.getName, marker: foo.getMarker, human}
-//     player2 = {name: bar.getName, marker: bar.getMarker, human}
-//   create variable for active player
-//     activePlayer = player1
-//   create method to switch active player
-//     function switchPlayer()
-//     activePlayer = activePlayer === player1 ? player2 : player 1
-//   create a method that plays one turn
-//     for active player
-//       method to input choice
-//         updates position variable
-//       update the gameboard array
-//         updateGameboard(activePlayer.marker, postion)
-//     check result
-//       if gameBoard.isWin(), announce result(activePlayer)
-//       else if gameBoard.isTie(), annunce result(tie)
-//       else newTurn()
-//   newTurn method to change activePlayer, perform one turn
-//     call switchPlayer()
-//     call playTurn()
-//   create method to announce result
-//     fucntion announceResult(result) => if player, log winner, else log tie
 
 /*
 Set up your HTML and write a JavaScript function that will render the contents of the gameboard array to the webpage (for now you can just manually fill in the array with "X"s and "O"s)
