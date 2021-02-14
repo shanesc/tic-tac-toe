@@ -27,23 +27,33 @@
 // create board module
 const board = (function () {
   //   within module, create board array, fill with random X's and O's for now
-  const board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'X'];
+  // const board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'X'];
+  let _board = _initialize();
   //   create a method to return the board array
   //     function getboard => return board array;
   function getBoard() {
-    return board;
+    return _board;
   }
   //   create a method to update board array
   //     function(marker, position) => board(position) = marker
-  function updateBoard(marker, position) {
-    board[position] = marker;
+  function update(marker, position) {
+    _board[position] = marker;
     return marker;
+  }
+
+  function _initialize() {
+    return new Array(9).fill(null);
+  }
+
+  function clear() {
+    _board = _board.map((position) => null);
+    return _board;
   }
 
   // create a method to determine result of board - draw, win, or null (i.e. not finished yet)
   function getResult() {
     //   if any null values in board, return null (not all moves made)
-    if (board.includes(null)) {
+    if (_board.includes(null)) {
       return null;
       //   else if check against 8 winning combos, if true return win (move to own function)
     } else if (checkForWinner()) {
@@ -55,7 +65,7 @@ const board = (function () {
 
     function checkForWinner() {
       // deconstruct array for easier references to positions
-      const [p1, p2, p3, p4, p5, p6, p7, p8, p9] = board;
+      const [p1, p2, p3, p4, p5, p6, p7, p8, p9] = _board;
 
       // return true for the following
       //     1 === 2 === 3, 4 === 5 === 6, 7 === 8 === 9,
@@ -85,8 +95,9 @@ const board = (function () {
 
   return {
     getBoard,
-    updateBoard,
+    update,
     getResult,
+    clear,
   };
 })();
 
@@ -141,21 +152,23 @@ controller (i.e. referee): controls the flow of game, divvy out marker, who make
 */
 
 // create gameControl module
-
-//  start
-//    clear board
-//    create players
-//    prompt player1 for selection
-//  _getGameState(board)
-//    if game is over, return tie or winner
-//    if game is not over, return in progress
-//  _getPlayerSelection(player)
-//    update board with selection
-//  makeTurn()
-//    switch active player
-//    getPlayerSelection(activePlayer)
-//  end
-//    return winner
+const controller = (() => {
+  //  start
+  //    clear board
+  //    create players
+  //    prompt player1 for selection
+  function start() {}
+  //  _getGameState(board)
+  //    if game is over, return tie or winner
+  //    if game is not over, return in progress
+  //  _getPlayerSelection(player)
+  //    update board with selection
+  //  makeTurn()
+  //    switch active player
+  //    getPlayerSelection(activePlayer)
+  //  end
+  //    return winner
+})();
 
 //   create variables to initialize players
 //     player1 = {name: foo.getName, marker: foo.getMarker, human}
