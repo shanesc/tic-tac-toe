@@ -1,7 +1,18 @@
+// render the contents of board array
+function renderToTiles(board) {
+  //   for each element in board array
+  board.forEach((el, i) => {
+    //     query for the tile associated with the index
+    const tile = document.querySelector(`#tile${i + 1}`);
+    //     set the inner html of the tile to the array value
+    tile.innerHTML = el;
+  });
+}
+
 // create board module
 const board = (function () {
-  // let _board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
-  let _board = new Array(9).fill(null);
+  let _board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
+  // let _board = new Array(9).fill(null);
 
   function getState() {
     return _board;
@@ -132,6 +143,8 @@ const controller = (() => {
 //    create players
 const player1 = Player('test', 'X', true);
 const player2 = Player('tester', 'O', true);
+
+renderToTiles(board.getState());
 
 /*
 Set up your HTML and write a JavaScript function that will render the contents of the gameboard array to the webpage (for now you can just manually fill in the array with "X"s and "O"s)
