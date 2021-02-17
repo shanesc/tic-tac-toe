@@ -1,14 +1,3 @@
-// render the contents of board array
-function renderToTiles(board) {
-  //   for each element in board array
-  board.forEach((el, i) => {
-    //     query for the tile associated with the index
-    const tile = document.querySelector(`#tile${i + 1}`);
-    //     set the inner html of the tile to the array value
-    tile.innerHTML = el;
-  });
-}
-
 // create board module
 const board = (function () {
   let _board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
@@ -19,8 +8,12 @@ const board = (function () {
   }
 
   function update(marker, position) {
-    _board[position] = marker;
-    return marker;
+    if (_board[position] === null) {
+      _board[position] = marker;
+      return marker;
+    } else {
+      return null;
+    }
   }
 
   function clear() {
@@ -28,10 +21,19 @@ const board = (function () {
     return _board;
   }
 
+  // render the contents of board array
+  function renderToTiles() {
+    _board.forEach((el, i) => {
+      const tile = document.querySelector(`#tile${i + 1}`);
+      tile.innerHTML = el;
+    });
+  }
+
   return {
     getState,
     update,
     clear,
+    renderToTiles,
   };
 })();
 
@@ -67,28 +69,62 @@ function Player(name, marker, human = false) {
 
 // create controller module
 const controller = (() => {
-  function play(playerOne, playerTwo) {
+  let activePlayer = null;
+  let playerOne = null;
+  let playerTwo = null;
+  let result = null;
+
+  function start() {
+    //    create players
+    playerOne = Player('Player 1', 'X', true);
+    playerTwo = Player('Player 2', 'O', true);
+
+    // set active player
+    activePlayer = playerOne;
+
+    // clear the board
     board.clear();
+    board.renderToTiles();
+    result = null;
 
-    let activePlayer = null;
-    let keepPlaying = true;
-
-    while (keepPlaying) {
-      activePlayer =
-        activePlayer === playerOne ? playerTwo : playerOne;
-      _takeTurn(activePlayer);
-      if (_isWinner() || _isDraw()) {
-        keepPlaying = false;
-      }
-    }
-
-    _end(_isWinner() ? activePlayer : 'Draw');
+    // add click event listener to all DOM tiles
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach((tile) => {
+      tile.addEventListener('click', _selectTile, { once: true });
+    });
   }
 
-  function _takeTurn(activePlayer) {
-    const selection = activePlayer.makeSelection(board);
-    board.update(activePlayer.getMarker(), selection);
-    console.log(board.getState());
+  function _selectTile(e) {
+    const arrayPosition = e.currentTarget.id.slice(-1);
+    _takeTurn(arrayPosition - 1);
+  }
+
+  function _takeTurn(selection) {
+    const isValid = board.update(activePlayer.getMarker(), selection);
+    if (isValid) {
+      board.renderToTiles();
+      if (_isGameOver()) {
+        _end(result);
+      } else {
+        activePlayer = _switchPlayer();
+      }
+    }
+  }
+
+  function _switchPlayer() {
+    return activePlayer === playerOne ? playerTwo : playerOne;
+  }
+
+  function _isGameOver() {
+    if (_isWinner()) {
+      result = activePlayer;
+      return true;
+    } else if (_isDraw()) {
+      result = 'draw';
+      return true;
+    } else {
+      return false;
+    }
   }
 
   function _isWinner() {
@@ -128,33 +164,26 @@ const controller = (() => {
     }
   }
 
-  function _end(winner) {
-    alert(winner === 'Draw' ? 'Draw' : winner.getName());
-    console.log('end');
+  function _end(result) {
+    const message =
+      result === 'draw'
+        ? `It's a tie!!`
+        : `${result.getName()} wins!!`;
+    const modalContent = document.querySelector('.modal-content');
+    const modal = document.querySelector('.modal');
+    modalContent.innerHTML = message;
+    modal.classList.add('open');
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('open');
+        start();
+      }
+    });
   }
 
   return {
-    play,
+    start,
   };
 })();
 
-//  start
-
-//    create players
-const player1 = Player('test', 'X', true);
-const player2 = Player('tester', 'O', true);
-
-renderToTiles(board.getState());
-
-/*
-Set up your HTML and write a JavaScript function that will render the contents of the gameboard array to the webpage (for now you can just manually fill in the array with "X"s and "O"s)
-Build the functions that allow players to add marks to a specific spot on the board, and then tie it to the DOM, letting players click on the gameboard to place their marker. Don’t forget the logic that keeps players from playing in spots that are already taken!
-Think carefully about where each bit of logic should reside. Each little piece of functionality should be able to fit in the game, player or gameboard objects.. but take care to put them in “logical” places. Spending a little time brainstorming here can make your life much easier later!
-Build the logic that checks for when the game is over! Should check for 3-in-a-row and a tie.
-Clean up the interface to allow players to put in their names, include a button to start/restart the game and add a display element that congratulates the winning player!
-Optional - If you’re feeling ambitious create an AI so that a player can play against the computer!
-Start by just getting the computer to make a random legal move.
-Once you’ve gotten that, work on making the computer smart. It is possible to create an unbeatable AI using the minimax algorithm (read about it here, some googling will help you out with this one)
-If you get this running definitely come show it off in the chatroom. It’s quite an accomplishment!
-
-*/
+controller.start();
