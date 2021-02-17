@@ -1,7 +1,6 @@
 // create board module
 const board = (function () {
-  let _board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
-  // let _board = new Array(9).fill(null);
+  let _board = new Array(9).fill(null);
 
   function getState() {
     return _board;
@@ -36,36 +35,6 @@ const board = (function () {
     renderToTiles,
   };
 })();
-
-// create players objects from factory functions
-function Player(name, marker, human = false) {
-  function getName() {
-    return name;
-  }
-
-  function getMarker() {
-    return marker;
-  }
-
-  function makeSelection(board = null) {
-    // create selection variable
-    let selection;
-    if (human) {
-      // prompt user for input based on available board spots
-      selection = prompt('Make a selection');
-    } else {
-      // do some AI selection based on board
-    }
-    // return selection
-    return selection;
-  }
-
-  return {
-    getName,
-    getMarker,
-    makeSelection,
-  };
-}
 
 // create controller module
 const controller = (() => {
@@ -185,5 +154,21 @@ const controller = (() => {
     start,
   };
 })();
+
+// create players factory function
+function Player(name, marker) {
+  function getName() {
+    return name;
+  }
+
+  function getMarker() {
+    return marker;
+  }
+
+  return {
+    getName,
+    getMarker,
+  };
+}
 
 controller.start();
